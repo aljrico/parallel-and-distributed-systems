@@ -1,5 +1,5 @@
 ---
-title: "Parallel and Distributed Systems"
+title: "PDS: Filtering and processing input with bash scripts"
 author: "Alfredo Hernández"
 date: "19 October 2017"
 output:
@@ -9,7 +9,7 @@ output:
     toc: yes
   pdf_document:
     toc: yes
-subtitle: Filtering and processing input with bash scripts
+subtitle: "Examples and exercises from linux2_all_191017.pdf"
 ---
 
 
