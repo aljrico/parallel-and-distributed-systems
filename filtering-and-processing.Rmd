@@ -1,0 +1,127 @@
+---
+title: "Parallel and Distributed Systems"
+author: "Alfredo Hernández"
+date: "19 October 2017"
+output:
+  html_notebook:
+    highlight: pygments
+    theme: cosmo
+    toc: yes
+  pdf_document:
+    toc: yes
+subtitle: Filtering and processing input with bash scripts
+---
+
+
+# Filtering and processing
+
+## Work (page 64)
+- How many unique authors are on that list?
+- How many articles did each author write?
+
+```{bash}
+FILE=data/articles-large.csv
+head -n4 $FILE 
+```
+
+```{bash}
+# Count unique authors
+cut data/articles-large.csv -d ',' -f3 | grep -v "Author" | grep . | sort | uniq -c | wc -l
+```
+
+```{bash}
+# Normal way
+grep -i "Article" data/articles-large.csv | cut -d ',' -f3 | sort | uniq -c
+```
+
+```{bash}
+# Slightly faster way (not needed in this case)
+cut data/articles-large.csv -d ',' -f2,3 | grep -i -n "Article" | cut -d ',' -f2 | sort | uniq -c
+```
+
+## Work (page 72)
+
+- Create a new list of january 20 articles
+- Extract the authors of those articles with the number of
+words each author wrote
+```{bash}
+grep -i "20 Jan 2017" data/articles-large.csv
+echo
+grep -i "20 Jan 2017" data/articles-large.csv | cut -d ',' -f3,8
+```
+
+```{bash}
+#awk {if ($1 == "20 Jan 2017") print $3"\t"$8} data/articles-large.csv
+```
+
+# Loops and conditionals
+
+## Work WIP (page 75)
+```{bash}
+#firstArg=$1
+#secondArg=$2
+#echo “You have entered \”$firstArg\” and \”$secondArg\””
+```
+
+
+## Example WIP (/tmp error)
+```{bash}
+#files = `ls *.txt`
+#for file in $files
+#do
+	#cat $file >> /Output.txt
+#done
+```
+## Work WIP (page 79)
+- Now modify the script to print the first 10 lines of each file in the
+compressed tarball
+```{bash}
+# Tony style
+#for filename in `ls *.txt`
+	#do echo $filename
+#done
+```
+
+```{bash}
+# Standard? style
+#for filename in $(ls *.txt)
+	#do echo $filenam
+#done
+```
+
+## Work (page 80)
+### Plant gene data set
+- What plants systems contain a Smell gene?
+```{bash}
+# The slow way (WIP)
+#for filename in $(ls data/*.genes)
+#	do
+		#echo "Looking at" $filename
+		#cut $filename -f1 | grep "Smell"
+#done
+```
+```{bash}
+# The good way
+grep -l "Smell" data/*.genes
+```
+
+- How many plant systems contain a Color gene?
+```{bash}
+grep -l "Color" data/*.genes | wc -l
+```
+- What genes are in common between apple and pear? Which are specific to each of them?
+```{bash}
+# In common
+cat data/apple.genes data/pear.genes | cut -f2 | sort | uniq -d
+echo
+# True unique
+cat data/apple.genes data/pear.genes | cut -f2 | sort | uniq -u
+```
+- How many genes are in common to all three plant systems?
+```{bash}
+cat data/*.genes > all.txt
+echo
+cat all.txt
+#| cut -f2 | sort | uniq -d
+```
+
