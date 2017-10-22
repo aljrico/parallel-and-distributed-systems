@@ -1,0 +1,163 @@
+---
+title: "PDS: Introduction to Linux"
+author: "Alfredo Hernández"
+date: "4 October 2017"
+output:
+  html_notebook:
+    highlight: pygments
+    theme: cosmo
+    toc: yes
+  pdf_document:
+    toc: yes
+subtitle: "Examples and exercises from linux1_250917.pdf"
+---
+
+# Terminal basics
+
+## Basic commands
+
+| Command   | Explanation                       |
+|-----------|-----------------------------------|
+| `pwd`     | Print working directory           |
+| `ls`      | Print content of directory        |
+| `cd`      | Change directory                  |
+| `cat`     | Print the contents of a file      |
+| `cp`      | Copy a file                       |
+| `mv`      | Move a file                       |
+| `rm`      | Remove a file                     |
+| `less`    | Read the contents of a file       |
+| `clear`   | Clear the terminal screen         |
+| `head`    | Show the first 10 lines of a file |
+| `tail`    | Show the last 10 lines of a file  |
+| `nano`    | Text editor, to modify text files |
+| `wget`    | Download a file from an URL       |
+
+## Try these commands (page 37)
+```{bash}
+pwd
+ls
+```
+```{bash}
+cd data
+pwd
+ls -lh
+```
+
+## ls typical options
+
+| Options   | Explanation                                          |
+|-----------|------------------------------------------------------|
+| `ls -l`   | use a long listing format                            |
+| `ls -t`   | sort by modification time, newest first              |
+| `ls -h`   | with -l and/or -s, print human readable sizes        |
+| `ls -R`   | list subdirectories recursively                      |
+| `ls -a`   | do not ignore entries starting with . (hidden files) |
+
+## Checking available space in disk
+```{bash}
+df -h
+```
+```{bash}
+du -sh *
+```
+## Getting help
+
+| Command   | Usage                                             |
+|-----------|---------------------------------------------------|
+| `which`   | Display which executable program will be executed |
+| `help`    | Get help for shell builtins                       |
+| `man`     | Display a command's manual page                   |
+| `apropos` | Display a list of appropriate commands            |
+| `info`    | Display a command's info entry                    |
+| `whatis`  | Display a very brief description of a command     |
+
+
+# Data compression
+
+## WORK!: WIP tar and gzip (page 49)
+- Unpack file `dataset.tar.gz`
+- Check if files are OK
+- Compress `jan2017articles.csv` with `bzip2`
+- Do the same with `gzip`
+- Compare the sizes of the compressed files
+- Pack dataset data folder with `tar` and `gzip`
+```{bash}
+echo
+```
+
+## WORK!: large files (page 50)
+- How to check if `articles-large.tar.gz` is downloaded correctly?
+- Use `man md5sum`, look for `–c` option
+- Use `md5sum` with the `.md5` file
+```{bash}
+cd data/articles-large
+md5sum -c articles-large.csv.md5
+```
+- What is the use of `file` and `apropos`?
+
+```{bash}
+file data/articles-large.tar.gz
+```
+
+```{bash}
+apropos gzip
+```
+
+## WORK! (page 65)
+- Unpack `dataset2.tar.gz` in a new project folder.
+- Go to `/home/<your user>/dataset2`.
+```{bash}
+cd data/dataset2
+ls *.csv
+```
+```{bash}
+cd data/dataset2
+ls *2017.csv
+```
+```{bash}
+cd data/dataset2
+ls {may2017,may2016}.csv
+```
+```{bash}
+cd data/dataset2
+ls -lt may201?.csv
+```
+
+# Symbolic links
+
+```{bash}
+cd data
+mkdir dataset3
+cd dataset3
+ln -s ../dataset2/jan2016.csv jan2016_link.csv
+```
+
+- When the symlink is created you can check the file with `ls`
+- Symlinks are deleted with unlink
+```{bash}
+cd data/dataset3
+ls -lh jan2016_link.csv
+unlink jan2016_link.csv
+echo
+ls -l
+```
+```{bash}
+rm -rf data/dataset3
+```
+
+
+## WORK! (page 72)
+- Display `data/dataset2/jan2017.csv` in the terminal
+- Show the first 10 lines of the symbolic link file
+
+```{bash}
+head -n10 data/dataset2/jan2017.csv
+```
+- Show the last 5 lines of the file
+```{bash}
+tail -n5 data/dataset2/jan2017.csv
+```
+- Show the size of the file
+```{bash}
+ls -lh data/dataset2/jan2017.csv
+```
