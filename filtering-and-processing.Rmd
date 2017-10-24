@@ -16,41 +16,44 @@ subtitle: "Examples and exercises from linux2_all_191017.pdf"
 # Filtering and processing
 
 ## Work (page 64)
-- How many unique authors are on that list?
-- How many articles did each author write?
 
+- First wo do a `head` to see the structure of the file
 ```{bash}
-FILE=data/articles-large.csv
-head -n4 $FILE 
+FILE=data/articles-large/articles-large.csv
+head -n2 $FILE 
 ```
-
+- How many unique authors are on that list?
 ```{bash}
 # Count unique authors
-cut data/articles-large.csv -d ',' -f3 | grep -v "Author" | grep . | sort | uniq -c | wc -l
+cut data/articles-large/articles-large.csv -d ',' -f3 | grep -v "Author" | grep . | sort | uniq -c | wc -l
 ```
-
+- How many articles did each author write?
 ```{bash}
 # Normal way
-grep -i "Article" data/articles-large.csv | cut -d ',' -f3 | sort | uniq -c
+grep -i "Article" data/articles-large/articles-large.csv | cut -d ',' -f3 | sort | uniq -c
 ```
 
 ```{bash}
 # Slightly faster way (not needed in this case)
-cut data/articles-large.csv -d ',' -f2,3 | grep -i -n "Article" | cut -d ',' -f2 | sort | uniq -c
+cut data/articles-large/articles-large.csv -d ',' -f2,3 | grep -i -n "Article" | cut -d ',' -f2 | sort | uniq -c
 ```
 
 ## Work (page 72)
 
 - Create a new list of january 20 articles
-- Extract the authors of those articles with the number of
-words each author wrote
 ```{bash}
-grep -i "20 Jan 2017" data/articles-large.csv
-echo
-grep -i "20 Jan 2017" data/articles-large.csv | cut -d ',' -f3,8
+grep -i "20 Jan 2017" data/articles-large/articles-large.csv
 ```
 
+- Extract the authors of those articles with the number of words each author wrote
 ```{bash}
+# Using grep
+grep -i "20 Jan 2017" data/articles-large/articles-large.csv | awk -F'"' -v OFS='' '{ for (i=2; i<=NF; i+=2) gsub(",", "", $i) } 1' | cut -d ',' -f3,8 | sort -u
+```
+Notice that we call `awk` to replace the commas (`,`) between the quotation marks (`"`). AKA, black magic.
+
+```{bash}
+# Using awk (WIP)
 #awk {if ($1 == "20 Jan 2017") print $3"\t"$8} data/articles-large.csv
 ```
 
@@ -64,7 +67,7 @@ grep -i "20 Jan 2017" data/articles-large.csv | cut -d ',' -f3,8
 ```
 
 
-## Example WIP (/tmp error)
+## Example WIP (page 77)
 ```{bash}
 #files = `ls *.txt`
 #for file in $files
@@ -76,52 +79,43 @@ grep -i "20 Jan 2017" data/articles-large.csv | cut -d ',' -f3,8
 - Now modify the script to print the first 10 lines of each file in the
 compressed tarball
 ```{bash}
-# Tony style
-#for filename in `ls *.txt`
-	#do echo $filename
-#done
+cd data
+for filename in $(ls *.tar.gz)
+	do echo $filename
+	tar tfz $filename
+	echo
+done
 ```
 
-```{bash}
-# Standard? style
-#for filename in $(ls *.txt)
-	#do echo $filenam
-#done
-```
+## Work: Plant gene data set (page 80)
 
-## Work (page 80)
-### Plant gene data set
 - What plants systems contain a Smell gene?
 ```{bash}
-# The slow way (WIP)
-#for filename in $(ls data/*.genes)
-#	do
-		#echo "Looking at" $filename
-		#cut $filename -f1 | grep "Smell"
-#done
-```
-```{bash}
-# The good way
-grep -l "Smell" data/*.genes
+grep -l "Smell" data/Plants/*.genes
 ```
 
 - How many plant systems contain a Color gene?
 ```{bash}
-grep -l "Color" data/*.genes | wc -l
+grep -l "Color" data/Plants/*.genes | wc -l
 ```
 - What genes are in common between apple and pear? Which are specific to each of them?
 ```{bash}
-# In common
-cat data/apple.genes data/pear.genes | cut -f2 | sort | uniq -d
+cd data/Plants
+# In common (repeated)
+cat apple.genes pear.genes | cut -f2 | sort | uniq -d
 echo
 # True unique
-cat data/apple.genes data/pear.genes | cut -f2 | sort | uniq -u
+cat apple.genes pear.genes | cut -f2 | sort | uniq -u
+# Specific to each of them?
 ```
 - How many genes are in common to all three plant systems?
 ```{bash}
-cat data/*.genes > all.txt
-echo
-cat all.txt
-#| cut -f2 | sort | uniq -d
+# Complicated way
+cd data/Plants
+cut -f2 apple.genes | sort | uniq -u > apple-uniq.txt
+cut -f2 pear.genes | sort | uniq -u > pear-uniq.txt
+cut -f2 peach.genes | sort | uniq -u > peach-uniq.txt
+cat *-uniq.txt | sort | uniq -dc | grep "3 "
+rm *-uniq.txt
 ```
 
