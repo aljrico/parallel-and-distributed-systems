@@ -84,7 +84,7 @@ du -sh *
 | `j`    | Filter the archive through `bzip2`       |
 | `t`    | List  the  contents of an archive.       |
 
-## WORK!: tar and gzip (page 49)
+## Work: tar and gzip (page 49)
 
 - Unpack file `dataset.tar.gz`
 ```{bash}
@@ -118,7 +118,7 @@ ls -lh jan2017articles.tar.*
 rm jan2017articles.tar.bz jan2017articles.tar.gz
 ```
 
-## WORK!: large files (page 50)
+## Work: large files (page 50)
 
 - How to check if `articles-large.tar.gz` is downloaded correctly?
 - Use `man md5sum`, look for `–c` option
@@ -142,7 +142,7 @@ file data/articles-large.tar.gz
 apropos gzip
 ```
 
-## WORK! (page 65)
+## Work (page 65)
 
 - Unpack `dataset2.tar.gz` in a new project folder.
 - Go to `/home/<your user>/dataset2`.
@@ -186,7 +186,7 @@ rm -rf data/dataset3
 ```
 
 
-## WORK! (page 72)
+## Work (page 72)
 
 - Display `data/dataset2/jan2017.csv` in the terminal
 - Show the first 10 lines of the symbolic link file
