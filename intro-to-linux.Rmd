@@ -74,18 +74,52 @@ du -sh *
 
 # Data compression
 
-## WORK!: WIP tar and gzip (page 49)
+| Option | Explanation                              |
+|--------|------------------------------------------|
+| `c`    | Create a new archive                     |
+| `x`    | Extract files from an archive            |
+| `v`    | Verbosely list files which are processed |
+| `f`    | Following is the archive file name       |
+| `z`    | Filter the archive through `gzip`        |
+| `j`    | Filter the archive through `bzip2`       |
+| `t`    | List  the  contents of an archive.       |
+
+## WORK!: tar and gzip (page 49)
+
 - Unpack file `dataset.tar.gz`
-- Check if files are OK
-- Compress `jan2017articles.csv` with `bzip2`
-- Do the same with `gzip`
-- Compare the sizes of the compressed files
-- Pack dataset data folder with `tar` and `gzip`
 ```{bash}
+cd data
+tar xvfz dataset.tar.gz
+```
+- Check if files are OK
+```{bash}
+cd data/dataset
+ls
+```
+- Compress `jan2017articles.csv` with `bzip2`
+```{bash}
+cd data
+tar cvfj jan2017articles.tar.bz dataset/jan2017articles.csv
 echo
+tar tvfj jan2017articles.tar.bz
+
+```
+- Do the same with `gzip`
+```{bash}
+cd data
+tar cvfz jan2017articles.tar.gz dataset/jan2017articles.csv
+echo
+tar tvfz jan2017articles.tar.gz
+```
+- Compare the sizes of the compressed files
+```{bash}
+cd data
+ls -lh jan2017articles.tar.*
+rm jan2017articles.tar.bz jan2017articles.tar.gz
 ```
 
 ## WORK!: large files (page 50)
+
 - How to check if `articles-large.tar.gz` is downloaded correctly?
 - Use `man md5sum`, look for `–c` option
 - Use `md5sum` with the `.md5` file
@@ -93,6 +127,11 @@ echo
 cd data/articles-large
 md5sum -c articles-large.csv.md5
 ```
+Keep in mind that the `.md5` file contains hash and filename pairs:
+```{bash}
+cat data/articles-large/articles-large.csv.md5
+```
+
 - What is the use of `file` and `apropos`?
 
 ```{bash}
@@ -104,6 +143,7 @@ apropos gzip
 ```
 
 ## WORK! (page 65)
+
 - Unpack `dataset2.tar.gz` in a new project folder.
 - Go to `/home/<your user>/dataset2`.
 ```{bash}
@@ -147,6 +187,7 @@ rm -rf data/dataset3
 
 
 ## WORK! (page 72)
+
 - Display `data/dataset2/jan2017.csv` in the terminal
 - Show the first 10 lines of the symbolic link file
 
