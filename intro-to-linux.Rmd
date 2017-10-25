@@ -1,5 +1,6 @@
 ---
 title: "PDS: Introduction to Linux"
+subtitle: "Examples and exercises from linux1_250917.pdf"
 author: "Alfredo Hernández"
 date: "4 October 2017"
 output:
@@ -9,7 +10,6 @@ output:
     toc: yes
   pdf_document:
     toc: yes
-subtitle: "Examples and exercises from linux1_250917.pdf"
 ---
 
 # Terminal basics
