@@ -1,0 +1,62 @@
+---
+title: "PDS: Module I - Linux scripting"
+subtitle: "Delivery 1: Linux Lab Exercices"
+author: "Alfredo Hernández"
+date: "5 November 2017"
+output:
+  html_notebook:
+    highlight: pygments
+    theme: cosmo
+    toc: no
+  pdf_document:
+    toc: no
+---
+
+Download `jan2017articles.csv` and `example.bed` files to solve the next
+questions.
+
+### Question 1 (1p)
+Take a look at the last 10 lines of the `jan2017articles.csv` file. Which command are you going to use? Modify the command to show just the last line of the file.
+
+### Question 2 (1p)
+Extract all lines that belong to January 6th from the file and store them in a new file named `reyes.csv`. Check that the first line of the new file has the expected values.
+
+### Question 3 (1p)
+Use the original csv to find which entries have 0 at the comment count only for those entries from january 25th.
+
+### Question 4 (1p)
+Now count the number of entries of Question 3 and compare with the total number of entries.
+
+### Question 5 (1p)
+Now use `example.bed` file. In this file, we are interested in the exon sizes of each entry. They are located in field number 11. Now you have to get the exon sizes of the first 10 entries of the file.
+
+### Question 6 (1p)
+How would you remove the last comma?
+
+### Question 7 (1p)
+How would get the smallest size from each of the records? The result should provide a number for each line of the input. 
+
+### Question 8 (1p)
+How would you now sort the records so that the first number shown is the smallest exon size? Again, the answer must provide a sorted list of numbers for each line of the input.
+
+### Question 9 (1p)
+Now get the 10 largest exons of chr1 stored in `example.bed`.
+
+### Question 10 (1p)
+Now modify Question 8 script to recieve as a parameter the number of exons to search for.
+
+### Question 11 (1p)
+Get the first 10 records of `jan2017articles.csv` with largest number of comments from the original csv file.
+
+### Question 12 (1p)
+Modify your previous script to receive a number as a parameter $N$ and then show the top $N$ entries with more comments
+
+### Question 13 (1p)
+Now we are going to create a new `articles.csv` where we get a different output data layout using `awk` tool:
+```
+INPUT: Post date,Content type,Author,Title,Comm count,Path,Tags,Word count
+OUTPUT: Title;Comment count;Word count;Post date
+```
+
+### Question 14 (1p)
+Now create a new `article2.csv` format where we cut the `Title` text to 10 characters and we get only the last level of the `Path`.
