@@ -4,11 +4,11 @@ subtitle: "Delivery 1: Linux Lab Exercices"
 author: "Alfredo Hernández"
 date: "5 November 2017"
 output:
-  pdf_document:
-    toc: no
   html_notebook:
     highlight: pygments
     theme: cosmo
+    toc: no
+  pdf_document:
     toc: no
 ---
 
@@ -109,9 +109,10 @@ awk '{ gsub(/,$/,"",$11) ; print $11 }' example.bed | awk '{m=$1; for(i=1;i<=NF;
 ### Question 8 (1p)
 **How would you now sort the records so that the first number shown is the smallest exon size? Again, the answer must provide a sorted list of numbers for each line of the input.**
 
-Although the commands we used in Question 7 are valid for the purpose we wanted to achieve, it involved working exclusively with field 11. Now we want to work with field 11 within the whole file, so we'll have to rewrite it a little bit (although it does essentially the same).
+Although the commands we used in Question 7 are valid for the purpose we wanted to achieve, it involved working exclusively with field 11. Now we want to work with field 11 within the whole file, so we'll have to rewrite it a little bit (although it does essentially the same). Printing the minimum values in a new field (at the beggining, for instance), we can easily sort the output.
+
 ```{bash warning=FALSE}
-awk '{ gsub(/,$/,"",$11); split($11, a, ","); m=$11; for(i=1;i<=length(a);i++) if(a[i]<m)m=a[i]; print m, $0}' OFS="\t" example.bed | sort -n 2>/dev/null | head -n5
+awk '{ gsub(/,$/,"",$11); split($11, a, ","); m=$11; for(i=1;i<=length(a);i++) if(a[i]<m) m=a[i]; print m, $0}' OFS="\t" example.bed | sort -n 2>/dev/null | head -n5
 ```
 
 Notice that we use `2>/dev/null` in `sed` to redirect the following error:
@@ -124,8 +125,10 @@ This may have something to do with RStudio's `bash` binary; using `zsh` (the she
 ### Question 9 (1p)
 **Now get the 10 largest exons of chr1 stored in `example.bed`.**
 
+This is very similar to the previous excercise, but we calculate the maximum of the exons (field 11) and sort using this new field. Notice that we declare `m` as `m=asort(a)` instead of `m=$11` as we did for the minimum for the algorith to work (not sure why, though).
+
 ```{bash}
-awk '/chr1/ { gsub(/,$/,"",$11); split($11, a, ","); m=$11; for(i=1;i<=length(a);i++) if(a[i]<m)m=a[i]; print m, $0}' OFS="\t" example.bed | sort -r -n 2>/dev/null | head -n10
+awk '/chr1/ { gsub(/,$/,"",$11); split($11, a, ","); m=asort(a); for(i=1;i<=length(a);i++) if(a[i]>m) m=a[i];  print m, $0}' OFS="\t" example.bed | sort -r -n 2>/dev/null | head
 ```
 
 
@@ -138,7 +141,7 @@ If this was evaluated from an actual `.sh` script instead of from an `.Rmd` note
 
 N=$1
 
-awk '/chr1/ { gsub(/,$/,"",$11); split($11, a, ","); m=$11; for(i=1;i<=length(a);i++) if(a[i]<m)m=a[i]; print m, $0}' OFS="\t" example.bed | sort -r -n 2>/dev/null | head $N
+awk '/chr1/ { gsub(/,$/,"",$11); split($11, a, ","); m=asort(a); for(i=1;i<=length(a);i++) if(a[i]>m) m=a[i];  print m, $0}' OFS="\t" example.bed | sort -r -n 2>/dev/null | head $N
 ```
 
 ### Notice
