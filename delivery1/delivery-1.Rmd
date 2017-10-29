@@ -1,6 +1,6 @@
 ---
-title: "PDS: Module I - Linux scripting"
-subtitle: "Delivery 1: Linux Lab Exercices"
+title: 'PDS: Module I - Linux scripting'
+subtitle: 'Delivery 1: Linux Lab Exercices'
 author: "Alfredo Hernández"
 date: "5 November 2017"
 output:
@@ -15,6 +15,7 @@ output:
 ```{r include=FALSE}
 knitr::opts_chunk$set(fig.width = 7, fig.height = 4, fig.align = "center", out.width = '80%')
 ```
+
 
 ## Report
 
