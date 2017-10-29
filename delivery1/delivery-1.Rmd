@@ -1,0 +1,187 @@
+---
+title: "PDS: Module I - Linux scripting"
+subtitle: "Delivery 1: Linux Lab Exercices"
+author: "Alfredo Hernández"
+date: "5 November 2017"
+output:
+  pdf_document:
+    toc: no
+  html_notebook:
+    highlight: pygments
+    theme: cosmo
+    toc: no
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(fig.width = 7, fig.height = 4, fig.align = "center", out.width = '80%')
+```
+
+## Report
+
+**Download `jan2017articles.csv` and `example.bed` files to solve the next
+questions.**
+
+### Question 1 (1p)
+**Take a look at the last 10 lines of the `jan2017articles.csv` file. Which command are you going to use? Modify the command to show just the last line of the file.**
+
+```{bash}
+# Show last 10 lines
+tail jan2017articles.csv
+echo
+# Show last line
+tail -n1 jan2017articles.csv
+```
+
+
+### Question 2 (1p)
+**Extract all lines that belong to January 6th from the file and store them in a new file named `reyes.csv`. Check that the first line of the new file has the expected values.**
+
+```{bash}
+# First method (could cause some problems)
+awk '/06 Jan/ { print $0 }' jan2017articles.csv > reyes1.csv
+# Second method (more reliable, but complex)
+awk '{ if($1 == "06 Jan 2017") print $0 }' FS="," jan2017articles.csv > reyes2.csv
+```
+
+We'll see however, that in this case both methods are equally valid:
+
+```{bash}
+# Empty output (both files are the same)
+diff reyes1.csv reyes2.csv
+```
+
+Let's check the content of the first line
+```{bash}
+head -n1 reyes1.csv
+```
+
+### Question 3 (1p)
+**Use the original `csv` to find which entries have 0 at the comment count only for those entries from january 25th.**
+
+```{bash}
+awk '{ if($1 == "25 Jan 2017" && $5 == 0) print $0 }' FS="," jan2017articles.csv
+```
+
+
+### Question 4 (1p)
+**Now count the number of entries of Question 3 and compare with the total number of entries.**
+
+```{bash}
+# We count the lines excluding the header
+counttot=$(cat jan2017articles.csv | tail -n +2 | wc -l)
+# We count the lines of question 3's output
+count3=$(awk '{ if($1 == "25 Jan 2017" && $5 == 0) print $0 }' FS="," jan2017articles.csv | wc -l)
+
+# Calculation using a bc (byte code) pipe
+echo $counttot - $count3 | bc
+```
+
+### Question 5 (1p)
+**Now use `example.bed` file. In this file, we are interested in the exon sizes of each entry. They are located in field number 11. Now you have to get the exon sizes of the first 10 entries of the file.**
+
+```{bash}
+awk '{ print $11 }' example.bed | head
+```
+
+
+### Question 6 (1p)
+**How would you remove the last comma?**
+
+```{bash}
+# Using awk and substring (removes last character)
+awk '{print substr($11, 1, length($11)-1)}' example.bed | head -n2
+# Using awk and gsub (removes last character)
+echo
+awk '{ gsub(/.$/,"",$11) ; print $11 }' example.bed | head -n2
+# Using awk and gsub (removes last comma; probably the best)
+echo
+awk '{ gsub(/,$/,"",$11) ; print $11 }' example.bed | head -n2
+```
+
+### Question 7 (1p)
+**How would get the smallest size from each of the records? The result should provide a number for each line of the input.**
+
+This can be done with a classical algorithm to find a minimal value in a list of numbers using `awk`. 
+```{bash}
+awk '{ gsub(/,$/,"",$11) ; print $11 }' example.bed | awk '{m=$1; for(i=1;i<=NF;i++) if($i<m) m=$i; print "min of line", NR": ", m}' FS="," | head -n5
+```
+
+### Question 8 (1p)
+**How would you now sort the records so that the first number shown is the smallest exon size? Again, the answer must provide a sorted list of numbers for each line of the input.**
+
+Although the commands we used in Question 7 are valid for the purpose we wanted to achieve, it involved working exclusively with field 11. Now we want to work with field 11 within the whole file, so we'll have to rewrite it a little bit (although it does essentially the same).
+```{bash warning=FALSE}
+awk '{ gsub(/,$/,"",$11); split($11, a, ","); m=$11; for(i=1;i<=length(a);i++) if(a[i]<m)m=a[i]; print m, $0}' OFS="\t" example.bed | sort -n 2>/dev/null | head -n5
+```
+
+Notice that we use `2>/dev/null` in `sed` to redirect the following error:
+```
+sort: write failed: 'standard output': Broken pipe
+sort: write error
+```
+This may have something to do with RStudio's `bash` binary; using `zsh` (the shell I've been using for years) doesn't seem to give this error.
+
+### Question 9 (1p)
+**Now get the 10 largest exons of chr1 stored in `example.bed`.**
+
+```{bash}
+awk '/chr1/ { gsub(/,$/,"",$11); split($11, a, ","); m=$11; for(i=1;i<=length(a);i++) if(a[i]<m)m=a[i]; print m, $0}' OFS="\t" example.bed | sort -r -n 2>/dev/null | head -n10
+```
+
+
+### Question 10 (1p)
+**Now modify Question 9 script to recieve as a parameter the number of exons to search for.**
+
+If this was evaluated from an actual `.sh` script instead of from an `.Rmd` notebook we would use an argument for $N$:
+```{bash eval=FALSE}
+#!/bin/bash
+
+N=$1
+
+awk '/chr1/ { gsub(/,$/,"",$11); split($11, a, ","); m=$11; for(i=1;i<=length(a);i++) if(a[i]<m)m=a[i]; print m, $0}' OFS="\t" example.bed | sort -r -n 2>/dev/null | head $N
+```
+
+### Notice
+The `Title` field in `jan2017articles.csv` is not formatted well and may have commas inside it, making really difficult to work with columns/fields. Thankfully, the field separator is just a single comma (`,`), whilst the commas in the titles are accompanied by a space (`, `). Knowing this, we just need to systematically perform a `gsub(", ", " ")` substitution before working with this file.
+
+We should have done this as well in questions 3 and 4, but the titles of the matched lines in those questions are properly formatted and don't induce any error.
+
+### Question 11 (1p)
+**Get the first 10 records of `jan2017articles.csv` with largest number of comments from the original csv file.**
+```{bash}
+awk '{ gsub(", ", " "); print $0}' FS="," jan2017articles.csv | sort -t',' -k5 -r 2>/dev/null | head
+```
+
+### Question 12 (1p)
+**Modify your previous script to receive a number as a parameter $N$ and then show the top $N$ entries with more comments.**
+
+As we said in Question 10, we would use an argument for $N$:
+```{bash eval=FALSE}
+#!/bin/bash
+
+N=$1
+
+awk '{ gsub(", ", " "); print $0}' FS="," jan2017articles.csv | sort -t',' -k5 -r 2>/dev/null | head -n$N
+```
+
+### Question 13 (1p)
+**Now we are going to create a new `articles.csv` where we get a different output data layout using `awk` tool:**
+```
+INPUT: Post date,Content type,Author,Title,Comment count,Path,Tags,Word count
+OUTPUT: Title;Comment count;Word count;Post date
+```
+```{bash}
+awk '{ gsub(", ", " "); print $4, $5, $8, $1}' FS="," OFS=";" jan2017articles.csv > articles.csv
+head -n5 articles.csv
+```
+
+### Question 14 (1p)
+**Now create a new `article2.csv` format where we cut the `Title` text to 10 characters and we get only the last level of the `Path`.**
+```{bash}
+awk '{ gsub(", ", " "); a = substr($4, 1, 10) ; split($6, b, "/"); print $1, $2, $3, a, $5, b[length(b)], $7, $8 }' FS="," OFS=";" jan2017articles.csv > article2.csv
+head -n5 article2.csv
+```
+
+## References
+
+- https://genome.ucsc.edu/FAQ/FAQformat.html#format1
