@@ -1,0 +1,115 @@
+---
+title: "PDS: Filtering and processing input with bash scripts"
+subtitle: "Examples and exercises from linux2_all_191017.pdf"
+author: "Alfredo Hernández"
+date: "19 October 2017"
+output:
+  html_notebook:
+    highlight: pygments
+    theme: cosmo
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+
+# Flashback
+
+## Work: Plant gene data set (page 80)
+
+- What plants systems contain a Smell gene?
+```{bash}
+grep -l "Smell" data/Plants/*.genes
+```
+
+- How many plant systems contain a Color gene?
+```{bash}
+grep -l "Color" data/Plants/*.genes | wc -l
+```
+```{bash}
+# Toni's answer
+grep -l "Color" data/Plants/*.genes | cut -f1 -d "." | uniq -c
+```
+- What genes are in common between apple and pear? Which are specific to each of them?
+```{bash}
+cd data/Plants
+# In common (repeated)
+cat apple.genes pear.genes | cut -f2 | sort | uniq -d
+echo
+# True unique
+cat apple.genes pear.genes | cut -f2 | sort | uniq -u
+# Specific to each of them?
+```
+- How many genes are in common to all three plant systems?
+```{bash}
+# Complicated way
+cd data/Plants
+cut -f2 apple.genes | sort | uniq -u > apple-uniq.txt
+cut -f2 pear.genes | sort | uniq -u > pear-uniq.txt
+cut -f2 peach.genes | sort | uniq -u > peach-uniq.txt
+cat *-uniq.txt | sort | uniq -dc | grep "3 "
+rm *-uniq.txt
+```
+```{bash}
+# Toni's answer (not totally correct)
+cd data/Plants
+cat *.genes | sort | uniq -c | grep "3 " | wc -l
+# Column correction (still not correct)
+cat *.genes | cut -f2 | sort | uniq -c | sort | grep "3 " | wc -l
+```
+
+# Regular expressions
+
+```
+egrep '^chr1.*\+' file.gff
+```
+
+## Grep when finding words
+```
+IN:
+grep -i "chr" file.giff
+OUT:
+chr1 MATCH
+chr2 MATCH
+chromosome1 MATCH
+```
+
+```
+IN:
+grep -wi "chr1" file.giff
+OUT:
+chr1 MATCH
+chr12 NO MATCH
+chromosome1 NO MATCH
+```
+
+## Work
+```{bash}	
+cd data
+# head -n2 all.gff3
+cut -f3,9 all.gff3 | egrep "gene\t" | cut -f2 | cut -d ";" -f1 | grep "ID=" | sort | uniq -u | wc -l
+#cut -f3,9 all.gff3 | egrep '^gene' | wc -l 
+echo 
+cut -f3,9 all.gff3 | egrep '^gene' | cut -f2 | cut -d ";" -f1 | grep "ID=" | sort | uniq -u | wc -l
+```
+
+## Using awk
+- Check if the content is Linux. If it is yes, in the Action, just increment the count variable, which was initialised with zero in the BEGIN section.
+
+```{bash}
+cd data/articles-large
+awk 'BEGIN { count=0; }
+-F '\t' $4 ~ Linux { count ++; }
+END { print "Number of Linux papers =", count; }' articles-large.csv
+```
+
+## Work (same in awk)
+
+```{bash}
+cd data
+awk '{ if($3=="gene") print $9; }' all.gff3 | cut -f1 -d ';' | sort | uniq | wc -l
+echo
+awk '{ if($3=="gene") print $NF; }' all.gff3 | cut -f1 -d ';' | sort | uniq | wc -l
+
+```
+Where `$NF` means "number of fields" (columns). This works as it is the last one.
+
