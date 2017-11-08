@@ -12,15 +12,9 @@ output:
     toc: no
 ---
 
-```{r include=FALSE}
-knitr::opts_chunk$set(fig.width = 7, fig.height = 4, fig.align = "center", out.width = '80%')
-```
-
-
 ## Report
 
-**Download `jan2017articles.csv` and `example.bed` files to solve the next
-questions.**
+**Download `jan2017articles.csv` and `example.bed` files to solve the next questions.**
 
 ### Question 1 (1p)
 **Take a look at the last 10 lines of the `jan2017articles.csv` file. Which command are you going to use? Modify the command to show just the last line of the file.**
@@ -51,7 +45,7 @@ We'll see however, that in this case both methods are equally valid:
 diff reyes1.csv reyes2.csv
 ```
 
-Let's check the content of the first line
+Let's check the content of the first line:
 ```{bash}
 head -n1 reyes1.csv
 ```
@@ -142,7 +136,7 @@ If this was evaluated from an actual `.sh` script instead of from an `.Rmd` note
 
 N=$1
 
-awk '/chr1/ { gsub(/,$/,"",$11); split($11, a, ","); m=asort(a); for(i=1;i<=length(a);i++) if(a[i]>m) m=a[i];  print m, $0}' OFS="\t" example.bed | sort -r -n 2>/dev/null | head $N
+awk '/chr1/ { gsub(/,$/,"",$11); split($11, a, ","); m=asort(a); for(i=1;i<=length(a);i++) if(a[i]>m) m=a[i];  print m, $0}' OFS="\t" example.bed | sort -r -n 2>/dev/null | head -n$N
 ```
 
 ### Notice
