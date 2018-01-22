@@ -147,7 +147,7 @@ We should have done this as well in questions 3 and 4, but the titles of the mat
 ### Question 11 (1p)
 **Get the first 10 records of `jan2017articles.csv` with largest number of comments from the original csv file.**
 ```{bash}
-awk '{ gsub(", ", " "); print $0}' FS="," jan2017articles.csv | sort -t',' -k5 -r 2>/dev/null | head
+awk '{ gsub(", ", " "); print $0}' FS="," jan2017articles.csv | sort -t',' -k5 -n -r 2>/dev/null | head
 ```
 
 ### Question 12 (1p)
@@ -159,7 +159,7 @@ As we said in Question 10, we would use an argument for $N$:
 
 N=$1
 
-awk '{ gsub(", ", " "); print $0}' FS="," jan2017articles.csv | sort -t',' -k5 -r 2>/dev/null | head -n$N
+awk '{ gsub(", ", " "); print $0}' FS="," jan2017articles.csv | sort -t',' -k5 -n -r 2>/dev/null | head -n$N
 ```
 
 ### Question 13 (1p)

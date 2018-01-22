@@ -84,6 +84,7 @@ for filename in $(ls *.tar.gz)
 	do echo $filename
 	tar tfz $filename
 	echo
+	#zcat $filename | head -n1
 done
 ```
 
@@ -97,6 +98,10 @@ grep -l "Smell" data/Plants/*.genes
 - How many plant systems contain a Color gene?
 ```{bash}
 grep -l "Color" data/Plants/*.genes | wc -l
+```
+```{bash}
+# Toni's answer
+grep -l "Color" data/Plants/*.genes | cut -f1 -d "." | uniq -c
 ```
 - What genes are in common between apple and pear? Which are specific to each of them?
 ```{bash}
@@ -118,4 +123,10 @@ cut -f2 peach.genes | sort | uniq -u > peach-uniq.txt
 cat *-uniq.txt | sort | uniq -dc | grep "3 "
 rm *-uniq.txt
 ```
-
+```{bash}
+# Toni's answer (not totally correct)
+cd data/Plants
+cat *.genes | sort | uniq -c | grep "3 " | wc -l
+# Column correction (still not correct)
+cat *.genes | cut -f2 | sort | uniq -c | sort | grep "3 " | wc -l
+```
