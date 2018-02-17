@@ -7,7 +7,7 @@ for line in sys.stdin:
 	line = line.strip()
 
 	# Save word and count of each concat(word, 1)
-	word,count = line.split('\t', 1)
+	word, count = line.split('\t', 1)
 
 	# Check if count is a number
 	try:
