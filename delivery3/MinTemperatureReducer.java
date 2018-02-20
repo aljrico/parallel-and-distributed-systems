@@ -12,7 +12,7 @@ public class MinTemperatureReducer
       Context context)
       throws IOException, InterruptedException {
 
-    int minValue = Integer.MIN_VALUE;
+    int minValue = Integer.MAX_VALUE;
     for (IntWritable value : values) {
       minValue = Math.min(minValue, value.get());
     }
