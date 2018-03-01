@@ -1,8 +1,7 @@
 ---
 title: "PDS: Filtering and processing input with bash scripts"
 subtitle: "Examples and exercises from linux2_all_191017.pdf"
-author: "Alfredo Hernández"
-date: "19 October 2017"
+author: "Alejandro Jiménez & Alfredo Hernández"
 output:
   html_notebook:
     highlight: pygments
